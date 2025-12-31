@@ -1,0 +1,40 @@
+<div class="archive-page">
+  <h1 class="page-title">文章归档</h1>
+
+  <p class="page-description">
+    共 <%= posts.length %> 篇文章
+  </p>
+
+  <div class="archive-list">
+    <% Object.entries(archive).forEach(([key, data]) => { %>
+      <div class="archive-item">
+        <h2 class="archive-date">
+          <%= data.year %>年 <%= data.month %>月
+          <span class="post-count">(<%= data.articles.length %>)</span>
+        </h2>
+
+        <ul class="archive-posts">
+          <% data.articles.forEach(post => { %>
+            <li class="archive-post">
+              <span class="post-date"><%= date(post.date, 'MM-DD') %></span>
+              <a href="<%= post.url %>"><%= post.title %></a>
+              <% if (post.categories.length) { %>
+                <span class="post-categories">
+                  <% post.categories.forEach(cat => { %>
+                    <a href="/categories/<%= slug(cat) %>/">[<%= cat %>]</a>
+                  <% }) %>
+                </span>
+              <% } %>
+            </li>
+          <% }) %>
+        </ul>
+      </div>
+    <% }) %>
+  </div>
+
+  <% if (posts.length === 0) { %>
+    <div class="empty-state">
+      <p>还没有文章，快去创建第一篇吧！</p>
+    </div>
+  <% } %>
+</div>

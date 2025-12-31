@@ -1,0 +1,81 @@
+<div class="tag-page">
+  <h1 class="page-title">
+    <% if (typeof tag !== 'undefined') { %>
+      标签: <%= tag %>
+      <span class="count">(<%= posts.length %>)</span>
+    <% } else { %>
+      所有标签
+      <span class="count">(<%= Object.keys(tags).length %>)</span>
+    <% } %>
+  </h1>
+
+  <% if (typeof tag === 'undefined') { %>
+    <!-- 标签云页 -->
+    <div class="tags-cloud">
+      <% Object.entries(tags).forEach(([name, tagPosts]) => { %>
+        <a href="/tags/<%= slug(name) %>/" class="tag-item" style="font-size: <%= Math.min(1.5, 0.8 + (tagPosts.length / 10)) %>rem;">
+          #<%= name %>
+          <span class="count">(<%= tagPosts.length %>)</span>
+        </a>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <!-- 单个标签页 -->
+    <div class="posts-list">
+      <% posts.forEach(post => { %>
+        <article class="post-item">
+          <h2 class="post-title">
+            <a href="<%= post.url %>"><%= post.title %></a>
+          </h2>
+
+          <div class="post-meta">
+            <span class="post-date">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM7 4.5a.5.5 0 0 1 1 0v3.793l2.146 2.147a.5.5 0 0 1-.708.708L7 8.707V4.5z"/>
+              </svg>
+              <%= date(post.date, 'YYYY-MM-DD') %>
+            </span>
+
+            <% if (post.categories.length) { %>
+              <span class="post-categories">
+                <% post.categories.forEach(cat => { %>
+                  <a href="/categories/<%= slug(cat) %>/"><%= cat %></a>
+                <% }) %>
+              </span>
+            <% } %>
+          </div>
+
+          <div class="post-excerpt">
+            <%- post.excerpt %>
+          </div>
+        </article>
+      <% }) %>
+    </div>
+
+    <% if (pagination && pagination.total > 1) { %>
+      <nav class="pagination">
+        <% if (pagination.prev) { %>
+          <a href="<%= pagination.prev %>" class="prev">← 上一页</a>
+        <% } else { %>
+          <span class="prev disabled">← 上一页</span>
+        <% } %>
+
+        <span class="page-info">
+          第 <%= pagination.current %> / <%= pagination.total %> 页
+        </span>
+
+        <% if (pagination.next) { %>
+          <a href="<%= pagination.next %>" class="next">下一页 →</a>
+        <% } else { %>
+          <span class="next disabled">下一页 →</span>
+        <% } %>
+      </nav>
+    <% } %>
+  <% } %>
+
+  <% if ((typeof tag !== 'undefined' && posts.length === 0) || (typeof tag === 'undefined' && Object.keys(tags).length === 0)) { %>
+    <div class="empty-state">
+      <p>暂无标签</p>
+    </div>
+  <% } %>
+</div>

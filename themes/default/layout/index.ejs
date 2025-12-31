@@ -1,0 +1,100 @@
+<div class="home-page">
+  <% if (site.description) { %>
+    <div class="site-intro">
+      <h2><%= site.description %></h2>
+    </div>
+  <% } %>
+
+  <div class="posts-list">
+    <% posts.forEach(post => { %>
+      <article class="post-card">
+        <% if (post.cover) { %>
+          <div class="post-cover">
+            <img src="<%= post.cover %>" alt="<%= post.title %>">
+          </div>
+        <% } %>
+
+        <div class="post-content">
+          <h2 class="post-title">
+            <a href="<%= post.url %>"><%= post.title %></a>
+          </h2>
+
+          <div class="post-meta">
+            <span class="post-date">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM7 4.5a.5.5 0 0 1 1 0v3.793l2.146 2.147a.5.5 0 0 1-.708.708L7 8.707V4.5z"/>
+              </svg>
+              <%= date(post.date, 'YYYY-MM-DD') %>
+            </span>
+
+            <% if (post.author && post.author !== 'Anonymous') { %>
+              <span class="post-author">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+                </svg>
+                <%= post.author %>
+              </span>
+            <% } %>
+
+            <% if (post.categories.length) { %>
+              <span class="post-categories">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zM2.5 2a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zm6.5.5A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zM1 10.5A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zm6.5.5A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3z"/>
+                </svg>
+                <% post.categories.forEach((cat, idx) => { %>
+                  <a href="/categories/<%= slug(cat) %>/"><%= cat %></a><%= idx < post.categories.length - 1 ? ', ' : '' %>
+                <% }) %>
+              </span>
+            <% } %>
+
+            <% if (post.tags.length) { %>
+              <span class="post-tags">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M3 2v4.586l7 7L14.586 9l-7-7H3zM2 2a1 1 0 0 1 1-1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-7 7a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 2 6.586V2z"/>
+                  <path d="M5.5 5a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1zm0 1a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM1 7.086a1 1 0 0 0 .293.707L8.75 15.25l-.043.043a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 0 7.586V3a1 1 0 0 1 1-1v5.086z"/>
+                </svg>
+                <% post.tags.forEach(tag => { %>
+                  <a href="/tags/<%= slug(tag) %>/">#<%= tag %></a>
+                <% }) %>
+              </span>
+            <% } %>
+          </div>
+
+          <div class="post-excerpt">
+            <%- post.excerpt %>
+          </div>
+
+          <a href="<%= post.url %>" class="read-more">
+            阅读全文 →
+          </a>
+        </div>
+      </article>
+    <% }) %>
+  </div>
+
+  <% if (pagination && pagination.total > 1) { %>
+    <nav class="pagination">
+      <% if (pagination.prev) { %>
+        <a href="<%= pagination.prev %>" class="prev">← 上一页</a>
+      <% } else { %>
+        <span class="prev disabled">← 上一页</span>
+      <% } %>
+
+      <span class="page-info">
+        第 <%= pagination.current %> / <%= pagination.total %> 页
+      </span>
+
+      <% if (pagination.next) { %>
+        <a href="<%= pagination.next %>" class="next">下一页 →</a>
+      <% } else { %>
+        <span class="next disabled">下一页 →</span>
+      <% } %>
+    </nav>
+  <% } %>
+
+  <% if (posts.length === 0) { %>
+    <div class="empty-state">
+      <p>还没有文章，快去创建第一篇吧！</p>
+    </div>
+  <% } %>
+</div>

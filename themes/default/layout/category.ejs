@@ -1,0 +1,100 @@
+<div class="category-page">
+  <h1 class="page-title">
+    <% if (typeof category !== 'undefined') { %>
+      分类: <%= category %>
+      <span class="count">(<%= posts.length %>)</span>
+    <% } else { %>
+      所有分类
+      <span class="count">(<%= Object.keys(categories).length %>)</span>
+    <% } %>
+  </h1>
+
+  <% if (typeof category === 'undefined') { %>
+    <!-- 分类列表页 -->
+    <div class="categories-list">
+      <% Object.entries(categories).forEach(([name, categoryPosts]) => { %>
+        <div class="category-item">
+          <h2 class="category-name">
+            <a href="/categories/<%= slug(name) %>/">
+              <%= name %>
+              <span class="count">(<%= categoryPosts.length %>)</span>
+            </a>
+          </h2>
+
+          <ul class="category-posts">
+            <% categoryPosts.slice(0, 5).forEach(post => { %>
+              <li class="category-post">
+                <span class="post-date"><%= date(post.date, 'YYYY-MM-DD') %></span>
+                <a href="<%= post.url %>"><%= post.title %></a>
+              </li>
+            <% }) %>
+
+            <% if (categoryPosts.length > 5) { %>
+              <li class="more-posts">
+                <a href="/categories/<%= slug(name) %>/">查看更多 →</a>
+              </li>
+            <% } %>
+          </ul>
+        </div>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <!-- 单个分类页 -->
+    <div class="posts-list">
+      <% posts.forEach(post => { %>
+        <article class="post-item">
+          <h2 class="post-title">
+            <a href="<%= post.url %>"><%= post.title %></a>
+          </h2>
+
+          <div class="post-meta">
+            <span class="post-date">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM7 4.5a.5.5 0 0 1 1 0v3.793l2.146 2.147a.5.5 0 0 1-.708.708L7 8.707V4.5z"/>
+              </svg>
+              <%= date(post.date, 'YYYY-MM-DD') %>
+            </span>
+
+            <% if (post.tags.length) { %>
+              <span class="post-tags">
+                <% post.tags.forEach(tag => { %>
+                  <a href="/tags/<%= slug(tag) %>/">#<%= tag %></a>
+                <% }) %>
+              </span>
+            <% } %>
+          </div>
+
+          <div class="post-excerpt">
+            <%- post.excerpt %>
+          </div>
+        </article>
+      <% }) %>
+    </div>
+
+    <% if (pagination && pagination.total > 1) { %>
+      <nav class="pagination">
+        <% if (pagination.prev) { %>
+          <a href="<%= pagination.prev %>" class="prev">← 上一页</a>
+        <% } else { %>
+          <span class="prev disabled">← 上一页</span>
+        <% } %>
+
+        <span class="page-info">
+          第 <%= pagination.current %> / <%= pagination.total %> 页
+        </span>
+
+        <% if (pagination.next) { %>
+          <a href="<%= pagination.next %>" class="next">下一页 →</a>
+        <% } else { %>
+          <span class="next disabled">下一页 →</span>
+        <% } %>
+      </nav>
+    <% } %>
+  <% } %>
+
+  <% if ((typeof category !== 'undefined' && posts.length === 0) || (typeof category === 'undefined' && Object.keys(categories).length === 0)) { %>
+    <div class="empty-state">
+      <p>暂无分类</p>
+    </div>
+  <% } %>
+</div>
