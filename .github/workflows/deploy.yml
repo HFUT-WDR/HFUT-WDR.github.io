@@ -1,0 +1,63 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Detect if this is a Jekyll site
+        id: check-jekyll
+        run: |
+          if [ -f "_config.yml" ]; then
+            echo "jekyll=true" >> $GITHUB_OUTPUT
+          else
+            echo "jekyll=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Setup Jekyll (if needed)
+        if: steps.check-jekyll.outputs.jekyll == 'true'
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+          
+      - name: Build site
+        run: |
+          if [ -f "_config.yml" ]; then
+            bundle exec jekyll build
+          else
+            # 如果是静态HTML，直接复制文件
+            mkdir -p _site
+            cp -r *.html *.css *.js _site/ 2>/dev/null || true
+          fi
+      
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+        
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '_site'
+          
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
